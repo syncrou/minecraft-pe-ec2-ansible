@@ -7,7 +7,7 @@
   - name: minecraftpe-mp
   - instance_type: m1.small
   - security_group: sg-dfe6c6a6
-  - image: ami-20a64d4d
+  - image: ami-bcb853d1
   - region: us-east-1
   - subnet: subnet-f849ff96
   tasks:
