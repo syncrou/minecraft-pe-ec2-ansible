@@ -5,7 +5,7 @@
   vars:
   - key: db
   - name: minecraftpe-mp
-  - instance_type: t2.nano
+  - instance_type: m1.small
   - security_group: sg-dfe6c6a6
   - image: ami-20a64d4d
   - region: us-east-1
