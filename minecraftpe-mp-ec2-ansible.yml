@@ -33,7 +33,7 @@
       state: started
       timeout: 60
     with_items: 
-      - "{{ item }}"
+      - "{{ ec2 }}"
     #- name: Echo the IP Address
     #local_action: shell: ifconfig | grep inet
     #- debug: msg="the output was {{ ec2.stdout }}"
