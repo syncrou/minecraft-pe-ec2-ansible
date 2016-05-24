@@ -12,8 +12,7 @@
   - subnet: subnet-f849ff96
   tasks:
   - name: Create Ec2 Instance
-    local_action:
-      module: ec2
+    ec2:
       key_name: "{{ key }}"
       instance_tags: {Name: "{{ name }}"}
       group_id: "{{ security_group }}"
@@ -24,9 +23,9 @@
       count: 1
       vpc_subnet_id: "{{ subnet }}"
       assign_public_ip: yes
-      register: output
+    register: ec2 
   - name: Wait for SSH to come up
       wait_for: host={{ item.public_dns_name }} port=22 delay=60 timeout=320 state=started
       with_items: ec2.instances
   - name: Echo the IP Address
-  - debug: msg="the output was {{ output.stdout }}"
+  - debug: msg="the output was {{ ec2.stdout }}"
