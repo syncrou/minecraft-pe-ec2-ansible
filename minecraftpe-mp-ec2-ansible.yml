@@ -24,7 +24,20 @@
       count: 1
       vpc_subnet_id: "{{ subnet }}"
       assign_public_ip: yes
-    register: ec2 
+    register: ec2_instance 
+  - name: Set the Instances facts
+    set_fact:
+      instance_public_ip_1: "{{ ec2_instance.results[0].instances[0].public_ip }}"
+      instance_id_1: "{{ ec2_instance.results[0].instances[0].id }}"
+  - name: Add the newly created EC2 instance to the local host group (located inside the directory)
+    local_action: 
+      module: lineinfile 
+      dest: "./hosts" 
+      regexp: "{{ item }}" 
+      insertafter: "[minecraft-server]" 
+      line: "{{ item }}"
+    with_items:
+      - "{{ instance_public_ip_1 }}"
   - name: Wait for SSH to come up
     local_action: 
       module: wait_for 
@@ -34,7 +47,7 @@
       search_regex: OpenSSH
       delay: 10
 
-- hosts: "{{ ec2.public_ip }}"
+- hosts: minecraft-server
   sudo: True
   remote_user: ubuntu
   gather_facts: True
