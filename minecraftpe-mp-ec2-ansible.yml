@@ -28,14 +28,20 @@
   - name: Wait for SSH to come up
     local_action: 
       module: wait_for 
-      #host: "{{ item.public_dns_name }}"
       host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
       port: 22 
       state: started
       search_regex: OpenSSH
       delay: 10
-    #with_items: 
-    #  - "{{ ec2 }}"
-    #- name: Echo the IP Address
-    #local_action: shell: ifconfig | grep inet
-    #- debug: msg="the output was {{ ec2.stdout }}"
+
+- hosts: "{{ ec2.public_ip }}"
+  sudo: True
+  remote_user: ubuntu
+  gather_facts: True
+  tasks:
+    - name: Get Ip Address
+      local_action:
+        module: shell
+        shell: ifconfig | grep inet
+        register: if_output
+        debug: msg="the output was {{ if_output.stdout }}"
