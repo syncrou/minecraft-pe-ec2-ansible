@@ -25,6 +25,10 @@
       vpc_subnet_id: "{{ subnet }}"
       assign_public_ip: yes
     register: ec2 
-  - name: Echo the IP Address
-  - shell: ifconfig | grep inet
-  - debug: msg="the output was {{ ec2.stdout }}"
+
+  - name: Wait for port 22 to be ready
+    #local_action: wait_for port=22 host={{ ansible_ssh_host }}  search_regex=OpenSSH delay=10
+    local_action: wait_for: host={{ item.public_dns_name }} port=22 delay=60 timeout=320 state=started
+    #- name: Echo the IP Address
+    #local_action: shell: ifconfig | grep inet
+    #- debug: msg="the output was {{ ec2.stdout }}"
