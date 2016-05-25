@@ -25,6 +25,11 @@
       region: "{{ region }}"
       image: "{{ item.image }}"
       wait: yes
+      wait_timeout: 600
+      user_data: |
+               #!/bin/sh
+               sudo apt-get update
+               sudo apt-get install python -y
       count: 1
       vpc_subnet_id: "{{ subnet }}"
       assign_public_ip: yes
