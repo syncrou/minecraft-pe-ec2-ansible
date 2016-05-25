@@ -30,7 +30,7 @@
     with_items: ec2_instances
 
   - name: output the IPs
-    debug: var=ec2.results.0.item.public_ip
+    debug: msg=The Public IP = "{{ item.instances[0]['public_ip'] }}"
     with_items: ec2.results
 
   #  - name: Wait for SSH
