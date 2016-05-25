@@ -48,7 +48,7 @@
     with_items: "{{ec2_info.results}}"
   
 - hosts: minecraftpe_hosts
-  gather_facts: True
+  gather_facts: False
   remote_user: 'ubuntu'
   tasks:
    - ping:
