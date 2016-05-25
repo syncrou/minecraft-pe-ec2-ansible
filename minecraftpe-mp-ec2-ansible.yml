@@ -16,7 +16,8 @@
         ssh_user: 'ubuntu'
   tasks:
   - name: Create Ec2 Instance
-    ec2:
+    local_action:
+      module: ec2
       key_name: "{{ key }}"
       instance_tags: {Name: "{{ item.name }}"}
       group_id: "{{ item.group_id }}"
@@ -27,38 +28,24 @@
       count: 1
       vpc_subnet_id: "{{ subnet }}"
       assign_public_ip: yes
-    register: ec2 
-    with_items: ec2_instances
+    register: ec2_info 
+    with_items: "{{ec2_instances}}"
 
-  - name: Add all instance public IPs to host group
-    add_host: hostname={{ item.public_ip }} groups=minecraftpe
-    with_items: ec2.instances
+  - debug: var=ec2_info
+  - debug: var=item
+    with_items: "{{ec2_info.instance_ids}}"
 
-  - name: output the Item
-    debug: var= "{{ item.public_ip }}"
-    with_items: ec2.instances
 
-  #  - name: Wait for SSH
-  #    wait_for:
-  #      #host: "{{ ec2.results[0].item.1['public_ip'] }}"
-  #      host: "{{ ec2.results.0.item.public_ip }}"
-  #      port: 22
-  #      delay: 10
-  #      timeout: 320
-  #      state: started
-  #    with_items: ec2.results
-  #
-  #  - name: Add hosts group temporary inventory group with pem path
-  #    add_host:
-  #      name: "{{ item.1.platform }} {{ ec2.results[item.0]['instances'][0]['public_ip'] }}"
-  #      groups: minecraftpe_hosts
-  #      ansible_ssh_host: "{{ ec2.results[item.0]['instances'][0]['public_ip'] }}"
-  #      ansible_ssh_private_key_file: '{{ pem_path }}'
-  #      ansible_ssh_user: "{{ item.1.ssh_user }}"
-  #      ec2_vars: "{{ ec2.results[item.0]['instances'][0] }}"
-  #      ec2_instance_ids: "{{ ec2.results[item.0]['instance_ids'] }}"
-  #    with_indexed_items: ec2_instances
-  #
-  #- hosts: minecraftpe_hosts
-  #  tasks:
-  #    - ping:
+  - add_host: hostname={{ item.public_ip }} groupname={{ app_name }}_{{ server_env }}
+    with_items: ec2_info.instances
+
+  - name: wait for instances to listen on port:22
+    wait_for:
+      state: started
+      host: "{{ item.public_dns_name }}"
+      port: 22
+    with_items: ec2_info.instances
+  
+- hosts: minecraftpe_hosts
+  tasks:
+   - ping:
