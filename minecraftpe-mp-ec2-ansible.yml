@@ -32,20 +32,20 @@
     with_items: "{{ec2_instances}}"
 
   - debug: var=ec2_info
-    with_items: "{{ec2_info.instance_ids}}"
+    with_items: "{{ec2_info.results}}"
   - debug: var=item
     with_items: "{{ec2_info.results}}"
 
 
-  - add_host: hostname="{{ item.public_ip }}" groupname=minecraftpe_hosts
-    with_items: "{{ec2_info.instances}}"
+  - add_host: hostname="{{ item.instances[0].public_ip }}" groupname=minecraftpe_hosts
+    with_items: "{{ec2_info.results}}"
 
   - name: wait for instances to listen on port:22
     wait_for:
       state: started
-      host: "{{ item.public_ip }}"
+      host: "{{ item.instances[0].public_ip }}"
       port: 22
-    with_items: "{{ec2_info.instances}}"
+    with_items: "{{ec2_info.results}}"
   
 - hosts: minecraftpe_hosts
   tasks:
