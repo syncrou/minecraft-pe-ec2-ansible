@@ -30,9 +30,9 @@
     register: ec2 
     with_items: ec2_instances
 
- - name: Add all instance public IPs to host group
-     add_host: hostname={{ item.public_ip }} groups=minecraftpe
-     with_items: ec2.instances
+  - name: Add all instance public IPs to host group
+    add_host: hostname={{ item.public_ip }} groups=minecraftpe
+    with_items: ec2.instances
 
   - name: output the Item
     debug: var= "{{ item.public_ip }}"
