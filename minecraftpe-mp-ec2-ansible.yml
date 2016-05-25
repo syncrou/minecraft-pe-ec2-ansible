@@ -12,8 +12,7 @@
   - subnet: subnet-f849ff96
   tasks:
   - name: Create Ec2 Instance
-    local_action:
-      module: ec2
+    ec2:
       key_name: "{{ key }}"
       instance_tags: {Name: "{{ name }}"}
       group_id: "{{ security_group }}"
@@ -24,19 +23,34 @@
       count: 1
       vpc_subnet_id: "{{ subnet }}"
       assign_public_ip: yes
-    with_items: ec2.instances
     register: ec2 
+    #with_items: ec2_instances
 
   - name: output the IPs
     #debug: msg=Allocated IP inside the VPC is {{ item }}
-    debug: var=item verbosity=4
-    with_items: ec2.instances
+    debug: var=item
+    with_items: ec2.results
 
-    #- name: Add new instance to host group
-    #- add_host: hostname={{ item.public_ip }} groupname=EC2
-    #- with_items: ec2.instances
+  - name: Wait for SSH
+    wait_for:
+      host: "{{ item['instances'][0]['public_ip'] }}"
+      port: 22
+      delay: 10
+      timeout: 320
+      state: started
+    with_items: ec2.results
 
-  #- name: Wait for SSH to come up
-    #- wait_for: host={{ item.public_ip }} port=22 delay=60 timeout=320 state=started
-    #- with_items: ec2.instances
+  - name: Add hosts group temporary inventory group with pem path
+    add_host:
+      name: "{{ item.1.platform }} {{ ec2.results[item.0]['instances'][0]['public_ip'] }}"
+      groups: minecraftpe_hosts
+      ansible_ssh_host: "{{ ec2.results[item.0]['instances'][0]['public_ip'] }}"
+      ansible_ssh_private_key_file: '{{ pem_path }}'
+      ansible_ssh_user: "{{ item.1.ssh_user }}"
+      ec2_vars: "{{ ec2.results[item.0]['instances'][0] }}"
+      ec2_instance_ids: "{{ ec2.results[item.0]['instance_ids'] }}"
+    with_indexed_items: ec2_instances
 
+- hosts: minecraftpe_hosts
+  tasks:
+    - ping:
