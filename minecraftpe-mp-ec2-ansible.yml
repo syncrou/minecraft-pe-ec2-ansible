@@ -25,18 +25,18 @@
       region: "{{ region }}"
       image: "{{ item.image }}"
       wait: yes
-      count: 2
+      count: 1
       vpc_subnet_id: "{{ subnet }}"
       assign_public_ip: yes
     register: ec2_info 
     with_items: "{{ec2_instances}}"
 
   - debug: var=ec2_info
+    with_items: "{{ec2_info.instance_ids}}"
   - debug: var=item
-    with_items: "{{ec2_info.instances}}"
 
 
-  - add_host: hostname="{{ item.public_ip }}" groupname=minecraftpe
+  - add_host: hostname="{{ item.public_ip }}" groupname=minecraftpe_hosts
     with_items: "{{ec2_info.instances}}"
 
   - name: wait for instances to listen on port:22
