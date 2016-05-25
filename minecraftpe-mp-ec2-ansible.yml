@@ -17,7 +17,7 @@
   - name: Create Ec2 Instance
     ec2:
       key_name: "{{ key }}"
-      instance_tags: "{{ item.tags }}"
+      instance_tags: {Name: "{{ item.name }}"}
       group_id: "{{ item.group_id }}"
       instance_type: "{{ instance_type }}"
       region: "{{ region }}"
