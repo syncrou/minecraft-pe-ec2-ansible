@@ -18,7 +18,7 @@
   copy: src=../templates/server.properties dest=/home/ubuntu/PocketMine-MP/server.properties owner=ubuntu group=ubuntu mode="u=rw,g=r,o=r"
 
 - name: Copy over the start script
-  copy :src=../templates/start_server.sh dest=/root/start_server.sh owner=root group=root mode="u=rwx, g=rx, o=x"
+  copy: src=../templates/start_server.sh dest=/root/start_server.sh owner=root group=root mode="u=rwx, g=rx, o=x"
 
   # This resolves a dns lookup issue when calling sudo
 - name: Update the hosts file with our internal ip
