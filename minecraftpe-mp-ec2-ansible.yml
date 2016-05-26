@@ -37,7 +37,7 @@
     #with_items: "{{ec2_info.results}}"
 
 
-  - add_host: hostname="{{ item.instances[0].public_ip }}" groupname=minecraftpe_hosts
+  - add_host: hostname="{{ item.instances[0].public_ip }}" groupname=minecraftpe
     with_items: "{{ec2_info.results}}"
 
   - name: wait for instances to listen on port:22
@@ -47,12 +47,16 @@
       port: 22
     with_items: "{{ec2_info.results}}"
   
-- hosts: minecraftpe_hosts
+- hosts: minecraftpe
   gather_facts: False
   remote_user: 'ubuntu'
+  # Run as sudo
   become: True
   pre_tasks:
     - name: 'install python2'
       raw: sudo apt-get -y install python-simplejson
   tasks:
-   - ping:
+    - name: Upgrade Install Apt Packages
+      apt: upgrade=dist
+    - name: Install git
+      apt: name=git state=present
