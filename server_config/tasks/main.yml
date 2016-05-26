@@ -34,4 +34,4 @@
     executable: "/bin/bash"
 
 - name: Output the command to connect to this server
-  debug: msg=Connect - ssh ubuntu@"{{ansible_host}}" followed by screen -list and screen -x <screen id>
+  debug: msg="Connect - ssh ubuntu@'{{ansible_host}}' - screen -list and screen -x <screen id>"
