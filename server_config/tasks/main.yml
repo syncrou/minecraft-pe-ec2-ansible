@@ -34,4 +34,4 @@
     executable: "/bin/bash"
 
 - name: Output the command to connect to this server
-  debug: msg="{{ansible_ssh_host}} - ssh ubuntu@{{ansible_ssh_host}} - sudo su -, screen -x minecraftpe"
+  debug: msg="{{inventory_hostname}} - ssh ubuntu@{{inventory_hostname}} - sudo su -, screen -x minecraftpe"
