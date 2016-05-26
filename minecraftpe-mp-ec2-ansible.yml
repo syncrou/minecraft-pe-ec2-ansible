@@ -47,7 +47,8 @@
       port: 22
     with_items: "{{ec2_info.results}}"
 
-- roles:
+- hosts: minecraftpe
+  roles:
   - server_config
 
   
