@@ -66,7 +66,7 @@
       git: repo=https://github.com/PocketMine/PocketMine-MP.git dest=/home/ubuntu/PocketMine-MP recursive=true
 
     - name: Pull in and extract the correct php7 binary
-      raw: cd /home/ubuntu/PocketMine-MP && wget https://bintray.com/pocketmine/PocketMine/download_file?file_path=PHP_7.0.3_x86-64_Linux.tar.gz && tar -xf download_file?file_path=PHP_7.0.3_x86-64_Linux.tar.gz && rm download_file?file_path=PHP_7.0.3_x86-64_Linux.tar.gz
+      raw: cd /home/ubuntu/PocketMine-MP && wget "https://bintray.com/pocketmine/PocketMine/download_file?file_path=PHP_7.0.3_x86-64_Linux.tar.gz" && tar -xf "download_file?file_path=PHP_7.0.3_x86-64_Linux.tar.gz" && rm "download_file?file_path=PHP_7.0.3_x86-64_Linux.tar.gz"
 
     - name: Copy over the server.properties
       copy: src=../templates/server.properties dest=/home/ubuntu/PocketMine-MP/server.properties owner=ubuntu group=ubuntu mode="u=rw,g=r,o=r"
