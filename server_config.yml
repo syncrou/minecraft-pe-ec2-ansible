@@ -1,0 +1,16 @@
+---
+#
+# This playbook can be run to simply manage an existing
+# host
+#
+
+- hosts: minecraftpe
+  gather_facts: False
+  remote_user: 'ubuntu'
+  # Run as sudo
+  become: True
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson
+  roles:
+    - server_config

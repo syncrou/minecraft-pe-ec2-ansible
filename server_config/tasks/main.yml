@@ -17,5 +17,15 @@
 - name: Copy over the server.properties
   copy: src=../templates/server.properties dest=/home/ubuntu/PocketMine-MP/server.properties owner=ubuntu group=ubuntu mode="u=rw,g=r,o=r"
 
+  # This resolves a dns lookup issue when calling sudo
+- name: Update the hosts file with our internal ip
+  raw: echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+- name: Change the ownership of the PocketMine-MP directory
+  raw: chown -R ubuntu:ubuntu /home/ubuntu/PocketMine-MP
+
 - name: Start the server
-  raw: cd /home/ubunut/PocketMine-MP && ./start.sh
+  raw: su - ubuntu && cd /home/ubuntu/PocketMine-MP && screen ./start.sh
+
+- name: Output the command to connect to this server
+  debug: msg=Connect - ssh ubuntu@"{{ansible_host}}" followed by screen -list and screen -x <screen id>
