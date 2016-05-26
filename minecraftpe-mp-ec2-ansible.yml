@@ -56,8 +56,11 @@
     - name: 'install python2'
       raw: sudo apt-get -y install python-simplejson
   tasks:
+    - name: Upgrade the Distro
+      apt: upgrade=dist
+
     - name: Install packages
-      apt: upgrade=dist name=git state=present
+      apt: name=git state=present
 
     - name: Clone the MinecraftPE-MP server code
       git: repo=https://github.com/PocketMine/PocketMine-MP.git dest=/home/ubuntu recursive=true
